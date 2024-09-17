@@ -3,20 +3,19 @@ import { FaSun, FaMoon } from 'react-icons/fa';
 import DashboardSidebar from './DashboardSidebar';
 import useDashboard from '../../hooks/consolidated/useDashboard';
 import useLogout from '../../hooks/useLogout';
+import UserManagementContent from './admin/UserManagementContent';
+import RoleManagement from './admin/RoleManagement';
+import NDISPlanManagement from './admin/NDISPlanManagement';
+import AdminServicesView from './admin/AdminServicesView';
+import AdminReportsComponent from './admin/components/AdminReportsComponent';
 import AdminNDISPlanAnalyticsComponent from './admin/components/AdminNDISPlanAnalyticsComponent';
 import AdminRecentAppointmentsComponent from './admin/components/AdminRecentAppointmentsComponent';
 import AdminSystemHealthComponent from './admin/components/AdminSystemHealthComponent';
 import AdminUserActivityComponent from './admin/components/AdminUserActivityComponent';
 import AdminServiceUtilizationComponent from './admin/components/AdminServiceUtilizationComponent';
 import AdminQuickActionsComponent from './admin/components/AdminQuickActionsComponent';
-import AdminReportsComponent from './admin/components/AdminReportsComponent';
 import AdminSystemAlertsComponent from './admin/components/AdminSystemAlertsComponent';
 import AdminUserGrowthComponent from './admin/components/AdminUserGrowthComponent';
-import RoleManagement from './admin/RoleManagement';
-import AdminServicesView from './admin/AdminServicesView';
-import UserManagementContent from './admin/UserManagementContent';
-import NDISPlanManagement from './admin/NDISPlanManagement';
-import ServiceCoordinationView from './admin/ServiceCoordinationView';
 
 const componentMap = {
   AdminNDISPlanAnalyticsComponent,
@@ -30,16 +29,16 @@ const componentMap = {
   AdminUserGrowthComponent,
 };
 
-const DynamicDashboard = ({ roleName, dashboardConfig, user }) => {
-  const { dashboardData, loading, error, updateNDISPlan, scheduleService, refreshDashboard } = useDashboard(roleName, dashboardConfig);
+const DynamicDashboard = ({ user }) => {
+  const { dashboardData, loading, error, updateNDISPlan, scheduleService, refreshDashboard } = useDashboard(user?.role?.name, user?.role?.dashboardConfig);
   const { handleLogout } = useLogout();
   const [activeTab, setActiveTab] = useState('Dashboard');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    console.log("DynamicDashboard received dashboardData:", dashboardData);
-  }, [dashboardData]);
+    console.log("Active Tab Changed:", activeTab);
+  }, [activeTab]);
 
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
@@ -51,45 +50,39 @@ const DynamicDashboard = ({ roleName, dashboardConfig, user }) => {
   };
 
   const renderContent = () => {
+    console.log("Rendering content for tab:", activeTab);
     switch (activeTab) {
       case 'Dashboard':
         return (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {dashboardConfig.components
-              .filter(component => dashboardConfig[component.type] !== false && component.enabled)
+            {user?.role?.dashboardConfig?.components
+              .filter(component => component.enabled)
               .map((component, index) => {
                 const Component = componentMap[component.type];
                 if (Component) {
                   const componentData = dashboardData ? dashboardData[component.type.toLowerCase()] : null;
-                  console.log(`Rendering ${component.type} with data:`, componentData);
                   return (
-                    <div key={index} className="4">
+                    <div key={index} className="col-span-1">
                       <Component data={componentData} />
                     </div>
                   );
-                } else {
-                  console.warn(`Unknown component type: ${component.type}`);
-                  return (
-                    <div key={index} className="bg-white rounded-xl shadow-lg p-4">
-                      <h2 className="text-lg font-semibold mb-2">{component.type}</h2>
-                      <p>Unknown component type</p>
-                    </div>
-                  );
                 }
+                return null;
               })}
           </div>
         );
+      case 'Users':
+        return <UserManagementContent />;
+      case 'Services':
+        return <AdminServicesView />;
+      case 'NDIS Plans':
+        return <NDISPlanManagement />;
+      case 'Reports':
+        return <AdminReportsComponent />;
       case 'Role Management':
-        return user.role.name === 'admin' ? <RoleManagement /> : null;
-      case 'User Management':
-        return user.role.name === 'admin' ? <UserManagementContent /> : null;
-      case 'Service Management':
-        return user.role.name === 'admin' ? <AdminServicesView /> : null;
-      case 'NDIS Plan Management':
-        return user.role.name === 'admin' ? <NDISPlanManagement /> : null;
-      case 'Service Coordination':
-        return user.role.name === 'admin' ? <ServiceCoordinationView /> : null;
+        return <RoleManagement />;
       default:
+        console.log("No matching tab found");
         return null;
     }
   };
@@ -136,7 +129,7 @@ const DynamicDashboard = ({ roleName, dashboardConfig, user }) => {
                         <img src={user.avatarUrl} alt={user?.name || 'User avatar'} />
                       ) : (
                         <div className="avatar placeholder">
-<div className="bg-neutral-focus text-neutral-content rounded-full w-10">
+                          <div className="bg-neutral-focus text-neutral-content rounded-full w-10">
                             <span className="text-xl">{user?.name?.charAt(0) || 'U'}</span>
                           </div>
                         </div>

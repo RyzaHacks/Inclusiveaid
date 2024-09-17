@@ -1,12 +1,9 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
 import * as HiIcons from 'react-icons/hi';
 import * as FaIcons from 'react-icons/fa';
 
 const DashboardSidebar = ({ user, activeTab, setActiveTab, collapsed, toggleSidebar }) => {
-  const router = useRouter();
-
   useEffect(() => {
     console.log('User object in DashboardSidebar:', user);
     if (user && user.role) {
@@ -17,21 +14,21 @@ const DashboardSidebar = ({ user, activeTab, setActiveTab, collapsed, toggleSide
     }
   }, [user]);
 
-const getNavItems = () => {
-  if (!user || !user.role || !user.role.sidebarItems) {
-    console.error('Sidebar items are missing or undefined');
-    return [];
-  }
+  const getNavItems = () => {
+    if (!user || !user.role || !user.role.sidebarItems) {
+      console.error('Sidebar items are missing or undefined');
+      return [];
+    }
 
-  return user.role.sidebarItems.map((item) => {
-    const Icon = HiIcons[item.icon] || FaIcons[item.icon] || FaIcons.FaQuestionCircle;
-    return {
-      name: item.name,
-      icon: Icon,
-      color: item.color || 'text-gray-500',
-    };
-  });
-};
+    return user.role.sidebarItems.map((item) => {
+      const Icon = HiIcons[item.icon] || FaIcons[item.icon] || FaIcons.FaQuestionCircle;
+      return {
+        name: item.name,
+        icon: Icon,
+        color: item.color || 'text-gray-500',
+      };
+    });
+  };
 
   const navItems = getNavItems();
 
@@ -41,7 +38,8 @@ const getNavItems = () => {
   };
 
   const handleLogout = () => {
-    router.push('/login');
+    // Implement logout functionality here
+    console.log('Logout clicked');
   };
 
   return (
@@ -134,7 +132,7 @@ const getNavItems = () => {
           whileHover={{ scale: 1.05, x: collapsed ? 0 : 5 }}
           whileTap={{ scale: 0.95 }}
         >
-<motion.div
+          <motion.div
             className={`w-6 h-6 ${collapsed ? 'mx-auto' : 'mr-3'}`}
             whileHover={{ x: [0, 5, 0], transition: { repeat: Infinity, duration: 1 } }}
           >

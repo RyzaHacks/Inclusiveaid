@@ -11,28 +11,28 @@ export const useAuth = () => {
     const router = useRouter();
 
     useEffect(() => {
-        const checkAuth = async () => {
+        const checkAuth = useCallback(async () => {
             const token = localStorage.getItem('token');
             setIsAuthenticated(!!token);
-
+    
             if (token) {
                 try {
-                    const response = await api.get('/api/v3/users/profile');
+                    const response = await api.get('/api/v3/users/profile', {
+                        params: {
+                            include: 'role.dashboardConfig,role.sidebarItems'
+                        }
+                    });
                     const userData = response.data;
                     setUser(userData);
                     setUserRole(userData.role?.name);
                     localStorage.setItem('user', JSON.stringify(userData));
                 } catch (error) {
                     console.error('Error checking auth:', error);
-                    setUser(null);
-                    setUserRole(null);
-                    setIsAuthenticated(false);
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('user');
+                    handleLogout();
                 }
             }
             setLoading(false);
-        };
+        }, []);
 
         checkAuth();
         window.addEventListener('storage', checkAuth);

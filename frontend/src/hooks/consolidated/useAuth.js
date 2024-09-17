@@ -1,4 +1,3 @@
-// inclusive-aid\frontend\src\hooks\consolidated\useAuth.js
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 import api from '../../utils/api';
@@ -18,7 +17,7 @@ export const useAuth = () => {
             try {
                 const response = await api.get('/api/v3/users/profile', {
                     params: {
-                        include: 'role' // Include the 'role' association
+                        include: 'role.dashboardConfig,role.sidebarItems'
                     }
                 });
                 const userData = response.data;
