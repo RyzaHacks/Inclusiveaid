@@ -1,0 +1,17 @@
+# Node modules
+node_modules
+npm-debug.log
+.env
+
+# Next.js build output
+.next
+out
+
+# Logs
+logs
+*.log
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore VSCode settings
+.vscode/

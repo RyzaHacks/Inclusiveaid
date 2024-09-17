@@ -1,0 +1,89 @@
+Here's the updated structure for the v2 routes:
+
+routes/v2/auth.js (new file)
+
+POST /register - User registration
+POST /login - User login
+POST /logout - User logout
+POST /forgot-password - Request password reset
+POST /reset-password - Reset password
+
+
+routes/v2/users.js (renamed from userRoutes.js)
+
+GET /me - Get current user's profile
+PUT /me - Update current user's profile
+GET /contacts - Get user's contacts
+GET / - Get all users (admin only)
+POST / - Create a new user (admin only)
+PUT /:id - Update a user (admin only)
+DELETE /:id - Delete a user (admin only)
+
+
+routes/v2/clients.js (new file)
+
+GET / - Get all clients (admin only)
+GET /:id - Get a specific client (admin only)
+GET /:id/ndis-plan - Get client's NDIS plan (client and admin only)
+PUT /:id/ndis-plan - Update client's NDIS plan (client and admin only)
+GET /:id/services - Get client's services (client and admin only)
+GET /:id/support-team - Get client's support team (client and admin only)
+
+
+routes/v2/service-workers.js (new file)
+
+GET / - Get all service workers (admin only)
+GET /:id - Get a specific service worker (admin only)
+GET /:id/services - Get service worker's assigned services (service worker and admin only)
+
+
+routes/v2/services.js (renamed from serviceRoutes.js)
+
+GET / - Get all services (client, service worker, and admin only)
+GET /:id - Get a specific service (client, service worker, and admin only)
+POST / - Create a new service (admin only)
+PUT /:id - Update a service (admin only)
+DELETE /:id - Delete a service (admin only)
+POST /assignments - Create a service assignment (client and admin only)
+GET /assignments/:id - Get a specific service assignment (client, service worker, and admin only)
+PUT /assignments/:id - Update a service assignment (client and admin only)
+DELETE /assignments/:id - Delete a service assignment (client and admin only)
+
+
+routes/v2/support-team.js (renamed from supportTeamRoutes.js)
+
+GET /:clientId - Get support team for a client (client and admin only)
+POST /:clientId - Add a support team member to a client (admin only)
+PUT /:clientId/:memberId - Update a support team member (admin only)
+DELETE /:clientId/:memberId - Remove a support team member from a client (admin only)
+
+
+routes/v2/messages.js (renamed from messageRoutes.js)
+
+POST / - Send a message
+GET /:partnerId - Get messages with a specific partner
+GET /conversations - Get user's conversations
+PUT /:messageId/read - Mark a message as read
+DELETE /:messageId - Delete a message
+GET /unread-count - Get count of unread messages
+GET /search - Search messages
+GET /latest - Get latest messages
+GET /sent - Get sent messages
+GET /drafts - Get draft messages
+
+
+routes/v2/notifications.js (split from notificationAndActivityRoutes.js)
+
+GET / - Get user's notifications
+PUT /:id/read - Mark a notification as read
+POST / - Create a new notification (admin only)
+DELETE /:id - Delete a notification (admin only)
+
+
+routes/v2/activity-logs.js (split from notificationAndActivityRoutes.js)
+
+GET / - Get activity logs
+POST / - Create a new activity log
+
+
+
